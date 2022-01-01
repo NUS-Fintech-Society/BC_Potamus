@@ -13,10 +13,9 @@ contract LoanPool {
     //Can consider to use external libraries or something to be more readable
 
     //Note that all these rate are per anual basis
-    uint256 constant FLOAT_DP = 10**18; //float decimal place
-    uint256 constant FIRST_INTEREST_RATE = 0.2 * FLOAT_DP;
-    uint256 constant SECOND_INTEREST_RATE = 2.0 * FLOAT_DP;
-    uint256 constant CRITICAL_UTIL_RATE = 0.8 * FLOAT_DP;
+    uint256 constant FIRST_INTEREST_RATE = 0.2 * 10**18;
+    uint256 constant SECOND_INTEREST_RATE = 2.0 * 10**18;
+    uint256 constant CRITICAL_UTIL_RATE = 0.8 * 10**18;
 
     address tokenAddress;
     uint256 depositBalance = 0;

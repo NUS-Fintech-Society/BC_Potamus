@@ -9,6 +9,9 @@
 ### Remix IDE
 contracts/artifacts/
 
+### Testing contract
+contracts/Hamster.sol
+
 ### Eclipse template
 
 .metadata
