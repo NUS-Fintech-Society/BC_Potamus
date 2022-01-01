@@ -4,8 +4,8 @@ pragma solidity ^0.8.0;
 
 contract LoanAccount {
     address userAddress;
-    mapping (address => uint256) depositMap;
-    mapping (address => uint256) loanMap;
+    mapping (address => unint256) depositMap;
+    mapping (address => unint256) loanMap;
     
     //TODO: maybe should make sure that only the main PotamusLoan contract
     //is able to call this function instead of everyone
@@ -13,22 +13,17 @@ contract LoanAccount {
         userAddress = _userAddress;
     }
     
-    function deposit (address _token) public {
+    function deposit (address _token) {
     }
 
-    function withdraw (address _token) public {
+    function withdraw (address _token) {
     }
 
-    function loan (uint256 _token) public {
+    function loan (uint256 _token) {
+
     }
 
-    function payback (uint256 _token) public {
+    function payback (uint256 _token) {
         
-    }
-
-    //when the account is at critical value
-    //will liquidate the entire deposit, return the left-over
-    function liquidate () public {
-
     }
 }
