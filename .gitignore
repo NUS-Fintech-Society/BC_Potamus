@@ -9,6 +9,9 @@
 ### Remix IDE
 contracts/artifacts/
 
+### Solidity IDE Compile Artifacts
+bin/
+
 ### Testing contract
 contracts/Hamster.sol
 
