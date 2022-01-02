@@ -12,7 +12,7 @@ contract LoanAccount {
         uint256 lastInterestRateUpdated;
     }
 
-    address userAddress;
+    address public userAddress;
     //Token Address => Balance
     mapping(address => Balance) balanceMap;
 
@@ -37,6 +37,10 @@ contract LoanAccount {
             balance.lastInterestRateUpdated = currentTime;
             balance.fsecondInterestRate = _fSecondInterestRate;
         }
+    }
+
+    function tokenBalance(address _token) public view returns (int256) {
+        return balanceMap[_token].balance;
     }
 
     function getNewBalance(
@@ -76,7 +80,7 @@ contract LoanAccount {
 
     function deposit(
         address _token,
-        int128 _amount,
+        int256 _amount,
         uint256 _fUpdatedSecondInterestRate
     ) public {
         require(_amount > 0, "Amount must be > 0");
