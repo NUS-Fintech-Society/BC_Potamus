@@ -63,8 +63,12 @@ contract PotamusLoan {
         _;
     }
 
-    function deposit(address _token, uint256 _amount) public payable {
+    function deposit(address _token, uint256 _amount) public {
         //Require checks
+        require(
+            IERC20(_token).allowance(msg.sender, address(this)) >= _amount,
+            "User approved amount is insufficient"
+        );
         //TODO: There are a lot of requirement check missing here
 
         //Creating LoanPool or Loan Account if they don't exist yet
