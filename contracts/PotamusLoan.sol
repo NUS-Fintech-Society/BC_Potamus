@@ -90,7 +90,7 @@ contract PotamusLoan {
 
         //Update Loan Pool
         loanPool.deposit(_amount);
-        loanPool.addLoanAccount(loanAccount);
+        loanPool.addLoanAccount(address(loanAccount));
 
         //Update Loan Account
         loanAccount.deposit(
