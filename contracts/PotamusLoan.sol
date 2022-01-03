@@ -9,18 +9,18 @@ import "./IERC20.sol";
 contract PotamusLoan {
     struct SearchableLoanAccount {
         bool isExist;
-        LoanAccount loanAccount;
+        address loanAccountAddress; //Address of LoanAccount
     }
 
     struct SearchableLoanPool {
         bool isExist;
-        LoanPool loanPool;
+        address loanPoolAddress; //Address of LoanPool
     }
 
     uint256 public reserve;
-    //UserAccount Address => LoanAccount
+    //UserAccount Address => Address of LoanAccount
     mapping(address => SearchableLoanAccount) public loanAccountMap;
-    //Token Address => LoanPool
+    //Token Address => Address of LoanPool
     mapping(address => SearchableLoanPool) public loanPoolMap;
 
     modifier onlyPoolExist(address _token) {
@@ -41,7 +41,8 @@ contract PotamusLoan {
 
     modifier onlyPoolSufficientFund(address _token, uint256 _amount) {
         require(
-            _amount < loanPoolMap[_token].loanPool.availableFund(),
+            _amount <
+                LoanPool(loanPoolMap[_token].loanPoolAddress).availableFund(),
             "Pool of this token doesn't have sufficient available fund for this operation"
         );
         _;
@@ -55,7 +56,8 @@ contract PotamusLoan {
         require(
             //TODO: Come back at this ugly conversion again
             int256(_amount) <
-                loanAccountMap[_userAddress].loanAccount.tokenBalance(_token),
+                LoanAccount(loanAccountMap[_userAddress].loanAccountAddress)
+                    .tokenBalance(_token),
             "Pool of this token doesn't have sufficient available fund for this operation"
         );
         _;
@@ -69,24 +71,22 @@ contract PotamusLoan {
         if (!loanPoolMap[_token].isExist) {
             loanPoolMap[_token] = SearchableLoanPool(
                 true,
-                new LoanPool(_token)
+                address(new LoanPool(_token))
             );
         }
         if (!loanAccountMap[msg.sender].isExist) {
             loanAccountMap[msg.sender] = SearchableLoanAccount(
                 true,
-                new LoanAccount(msg.sender)
+                address(new LoanAccount(msg.sender))
             );
         }
-        LoanPool loanPool = loanPoolMap[_token].loanPool;
-        LoanAccount loanAccount = loanAccountMap[msg.sender].loanAccount;
+        LoanPool loanPool = LoanPool(loanPoolMap[_token].loanPoolAddress);
+        LoanAccount loanAccount = LoanAccount(
+            loanAccountMap[msg.sender].loanAccountAddress
+        );
 
         //Transferring money from user account to loan pool account
-        IERC20(_token).transferFrom(
-            msg.sender,
-            address(loanPoolMap[_token].loanPool),
-            _amount
-        );
+        IERC20(_token).transferFrom(msg.sender, address(loanPool), _amount);
 
         //Update Loan Pool
         loanPool.deposit(_amount);
@@ -96,7 +96,7 @@ contract PotamusLoan {
         loanAccount.deposit(
             _token,
             int256(_amount),
-            loanPoolMap[_token].loanPool.fSecondInterestRate()
+            loanPool.fSecondInterestRate()
         );
     }
 

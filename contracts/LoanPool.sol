@@ -32,8 +32,8 @@ contract LoanPool {
     //Delete              O(1)
     //List                O(k) with k >= n
     struct ListableAccountMap {
-        LoanAccount[] accountList;
-        //User address to corresponding bool
+        address[] loanAccountAddressList;
+        //LoanAccount address to corresponding bool
         mapping(address => bool) boolMap;
     }
 
@@ -43,20 +43,20 @@ contract LoanPool {
         tokenAddress = _token;
     }
 
-    function isContain(LoanAccount _loanAccount) public view returns (bool) {
-        return accountMap.boolMap[_loanAccount.userAddress()];
+    function isContain(address _loanAccountAddress) public view returns (bool) {
+        return accountMap.boolMap[_loanAccountAddress];
     }
 
-    function addLoanAccount(LoanAccount _loanAccount) public {
-        if (!this.isContain(_loanAccount)) {
-            accountMap.accountList.push(_loanAccount);
-            accountMap.boolMap[_loanAccount.userAddress()] = true;
+    function addLoanAccount(address _loanAccountAddress) public {
+        if (!this.isContain(_loanAccountAddress)) {
+            accountMap.loanAccountAddressList.push(_loanAccountAddress);
+            accountMap.boolMap[_loanAccountAddress] = true;
         }
     }
 
-    function removeLoanAccount(LoanAccount _loanAccount) public {
-        if (this.isContain(_loanAccount)) {
-            accountMap.boolMap[_loanAccount.userAddress()] = false;
+    function removeLoanAccount(address _loanAccountAddress) public {
+        if (this.isContain(_loanAccountAddress)) {
+            accountMap.boolMap[_loanAccountAddress] = false;
         }
     }
 
@@ -88,10 +88,10 @@ contract LoanPool {
 
     function updateAccountListBalance() private {
         fSecondInterestRate = getAnnualInterestRate() / (365 * 1 days);
-        for (uint256 i = 0; i < accountMap.accountList.length; i++) {
-            LoanAccount loanAccount = accountMap.accountList[i];
-            if (accountMap.boolMap[loanAccount.userAddress()]) {
-                loanAccount.recalculateBalance(
+        for (uint256 i = 0; i < accountMap.loanAccountAddressList.length; i++) {
+            address loanAccountAddress = accountMap.loanAccountAddressList[i];
+            if (accountMap.boolMap[loanAccountAddress]) {
+                LoanAccount(loanAccountAddress).recalculateBalance(
                     tokenAddress,
                     fSecondInterestRate
                 );
