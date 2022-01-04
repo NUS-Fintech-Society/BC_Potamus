@@ -4,6 +4,8 @@ pragma solidity ^0.8.0;
 import "./LoanAccount.sol";
 import "./ABDKMathQuad.sol";
 
+import "./IERC20.sol";
+
 //LoanPool is the one holding the actual money
 contract LoanPool {
     //TODO: Fixed interest rate function for now
@@ -70,13 +72,37 @@ contract LoanPool {
         updateAccountListBalance();
     }
 
-    function withdraw(uint256 _amount) public {
+    //Returns if this money transfer is successful
+    modifier onlyMoneyOut(address _userAddress, uint256 _amount) {
+        //Make sure that the pool has sufficient ERC20
+        require(
+            IERC20(tokenAddress).balanceOf(address(this)) >= _amount,
+            "Pool has insufficient fund"
+        );
+        require(availableFund() >= _amount, "Pool has insufficient fund");
+        //Make the transfer
+        require(
+            IERC20(tokenAddress).transfer(_userAddress, _amount),
+            "Transfer of token failed"
+        );
+        _;
+    }
+
+    function withdraw(address _userAddress, uint256 _amount)
+        public
+        onlyMoneyOut(_userAddress, _amount)
+    {
+        //If transfer is succesful, update the pool balance
         depositBalance -= _amount;
         updateAccountListBalance();
     }
 
     //Have check to make sure the amount loan out doesn't cause more loan amount than deposit
-    function loan(uint256 _amount) public {
+    function loan(address _userAddress, uint256 _amount)
+        public
+        onlyMoneyOut(_userAddress, _amount)
+    {
+        //If transfer is succesful, update the pool balance
         loanBalance += _amount;
         updateAccountListBalance();
     }

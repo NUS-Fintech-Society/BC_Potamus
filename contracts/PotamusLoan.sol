@@ -90,7 +90,10 @@ contract PotamusLoan {
         );
 
         //Transferring money from user account to loan pool account
-        IERC20(_token).transferFrom(msg.sender, address(loanPool), _amount);
+        require(
+            IERC20(_token).transferFrom(msg.sender, address(loanPool), _amount),
+            "Transfer of token failed"
+        );
 
         //Update Loan Pool
         loanPool.deposit(_amount);
@@ -111,14 +114,76 @@ contract PotamusLoan {
         onlyAccountSufficientFund(msg.sender, _token, _amount)
         onlyPoolSufficientFund(_token, _amount)
     {
-        //Must be in this order
-        //Do the actual fund transfer to Pool
-        //Update LoanPool (LoanPool will also call to update all related LoanAccount to the lastest state)
-        //Update LoanAccount
+        //TODO: Some other requirements
         //TODO: Need to check from Oracle how much you can withdraw
+        LoanPool loanPool = LoanPool(loanPoolMap[_token].loanPoolAddress);
+        LoanAccount loanAccount = LoanAccount(
+            loanAccountMap[msg.sender].loanAccountAddress
+        );
+        //Do the actual fund transfer to Pool, this is done within the pool since the pool own that fund
+        loanPool.withdraw(msg.sender, _amount);
+        loanAccount.withdraw(_token, int256(_amount));
+
+        //If user withdraw all, remove LoanAccount from corresponding pool's watch list
+        if (!loanAccount.hasDepositOrLoan(_token)) {
+            loanPool.removeLoanAccount(address(loanAccount));
+        }
     }
 
-    function loan() public {}
+    function loan(address _token, uint256 _amount)
+        public
+        onlyAccountExist(msg.sender)
+        onlyPoolExist(_token)
+        onlyPoolSufficientFund(_token, _amount)
+    {
+        LoanPool loanPool = LoanPool(loanPoolMap[_token].loanPoolAddress);
+        LoanAccount loanAccount = LoanAccount(
+            loanAccountMap[msg.sender].loanAccountAddress
+        );
 
-    function payback() public {}
+        //TODO: Some other requirements
+
+        //Do the actual fund transfer to Pool
+        loanPool.loan(msg.sender, _amount);
+
+        loanAccount.loan(
+            _token,
+            int256(_amount),
+            loanPool.fSecondInterestRate() //Get the most udpated interest rate
+        );
+
+        //Add the loan account into loan pool watch list
+        loanPool.addLoanAccount(address(loanAccount));
+    }
+
+    function payback(address _token, uint256 _amount)
+        public
+        onlyAccountExist(msg.sender)
+        onlyPoolExist(_token)
+    {
+        //TODO: Some other requirement here, like it should fail if the user
+        //overpay for what they owe
+
+        LoanPool loanPool = LoanPool(loanPoolMap[_token].loanPoolAddress);
+        LoanAccount loanAccount = LoanAccount(
+            loanAccountMap[msg.sender].loanAccountAddress
+        );
+
+        //Transferring money from user account to loan pool account
+        require(
+            IERC20(_token).transferFrom(msg.sender, address(loanPool), _amount),
+            "Transfer of token failed"
+        );
+
+        //Update Loan Pool
+        loanPool.payback(_amount);
+
+        //Update Loan Account
+        loanAccount.payback(_token, int256(_amount));
+
+        //If user paid back all, remove LoanAccount from corresponding pool
+        if (!loanAccount.hasDepositOrLoan(_token)) {
+            loanPool.removeLoanAccount(address(loanAccount));
+        }
+    }
 }

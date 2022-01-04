@@ -4,6 +4,10 @@ pragma solidity ^0.8.0;
 import "./ABDKMathQuad.sol";
 
 contract LoanAccount {
+    //If balance is so minute, i.e falls within -epsilon to epsilon
+    //Set the balance to 0
+    int256 constant EPSILON = 5;
+
     struct Balance {
         address tokenAddress;
         int256 balance;
@@ -114,6 +118,9 @@ contract LoanAccount {
         );
 
         balance.balance -= _amount;
+
+        //If balance almost zero, remove it
+        removeBalanceIfZero(_token);
     }
 
     function loan(
@@ -148,5 +155,25 @@ contract LoanAccount {
             "You are overpaying for what you owe"
         );
         balance.balance += _amount;
+
+        //If balance almost zero, remove it
+        removeBalanceIfZero(_token);
+    }
+
+    function removeBalanceIfZero(address _token) private {
+        Balance storage balance = balanceMap[_token];
+        if (
+            balance.isExist &&
+            balance.balance < EPSILON &&
+            balance.balance > -EPSILON
+        ) {
+            balance.balance = 0;
+            balance.isExist = false;
+        }
+    }
+
+    function hasDepositOrLoan(address _token) public view returns (bool) {
+        //Return trues if the user deposit or loan in this token
+        return balanceMap[_token].isExist;
     }
 }
