@@ -6,6 +6,15 @@
 !.vscode/launch.json
 !.vscode/extensions.json
 
+### Front-end stuff
+__pycache__
+.history
+.hypothesis/
+build/
+reports/
+.env
+node_modules/
+
 ### Remix IDE
 contracts/artifacts/
 
