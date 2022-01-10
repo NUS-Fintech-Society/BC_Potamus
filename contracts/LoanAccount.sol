@@ -19,6 +19,29 @@ contract LoanAccount {
     address public userAddress;
     //Token Address => Balance
     mapping(address => Balance) balanceMap;
+    //Token Address List
+    address[] tokenAddressList;
+
+    function getTokenListLength() public view returns (uint256) {
+        return tokenAddressList.length;
+    }
+
+    function getTokenAddressAndBalance(address _userAddress, uint256 _index)
+        public
+        view
+        returns (
+            address _tokenAddress,
+            int256 _balance,
+            bool _isExist
+        )
+    {
+        address tokenAddress = tokenAddressList[_index];
+        return (
+            tokenAddress,
+            balanceMap[tokenAddress].balance,
+            balanceMap[tokenAddress].isExist
+        );
+    }
 
     //TODO: maybe should make sure that only the main PotamusLoan contract
     //is able to call this function instead of everyone
@@ -100,6 +123,8 @@ contract LoanAccount {
                 true,
                 block.timestamp
             );
+            //Add the address token to list of token
+            tokenAddressList.push(_token);
         }
     }
 
@@ -141,6 +166,8 @@ contract LoanAccount {
                 true,
                 block.timestamp
             );
+            //Add the address token to list of token
+            tokenAddressList.push(_token);
         }
     }
 

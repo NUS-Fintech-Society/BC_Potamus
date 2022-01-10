@@ -23,45 +23,38 @@ contract PotamusLoan {
     //Token Address => Address of LoanPool
     mapping(address => SearchableLoanPool) public loanPoolMap;
 
-    modifier onlyPoolExist(address _token) {
-        require(
-            loanPoolMap[_token].isExist,
-            "Pool of this token doesn't exist"
-        );
-        _;
+    //Wrapper function for LoanAccount
+    function getTokenListLength(address _userAddress)
+        public
+        view
+        returns (uint256)
+    {
+        if (loanAccountMap[_userAddress].isExist) {
+            LoanAccount loanAccount = LoanAccount(
+                loanAccountMap[_userAddress].loanAccountAddress
+            );
+            return loanAccount.getTokenListLength();
+        }
     }
 
-    modifier onlyAccountExist(address _userAddress) {
-        require(
-            loanAccountMap[_userAddress].isExist,
-            "Account of this user doesn't exist in the system"
-        );
-        _;
+    function getTokenAddressAndBalance(address _userAddress, uint256 _index)
+        public
+        view
+        returns (
+            address _tokenAddress,
+            int256 _balance,
+            bool _isExist
+        )
+    {
+        if (loanAccountMap[_userAddress].isExist) {
+            LoanAccount loanAccount = LoanAccount(
+                loanAccountMap[_userAddress].loanAccountAddress
+            );
+            return loanAccount.getTokenAddressAndBalance(_userAddress, _index);
+        }
     }
 
-    modifier onlyPoolSufficientFund(address _token, uint256 _amount) {
-        require(
-            _amount <
-                LoanPool(loanPoolMap[_token].loanPoolAddress).availableFund(),
-            "Pool of this token doesn't have sufficient available fund for this operation"
-        );
-        _;
-    }
-
-    modifier onlyAccountSufficientFund(
-        address _userAddress,
-        address _token,
-        uint256 _amount
-    ) {
-        require(
-            //TODO: Come back at this ugly conversion again
-            int256(_amount) <
-                LoanAccount(loanAccountMap[_userAddress].loanAccountAddress)
-                    .tokenBalance(_token),
-            "Pool of this token doesn't have sufficient available fund for this operation"
-        );
-        _;
-    }
+    //End of wrapper function for LoanAccount
 
     function deposit(address _token, uint256 _amount) public {
         //Require checks
@@ -185,5 +178,45 @@ contract PotamusLoan {
         if (!loanAccount.hasDepositOrLoan(_token)) {
             loanPool.removeLoanAccount(address(loanAccount));
         }
+    }
+
+    modifier onlyPoolExist(address _token) {
+        require(
+            loanPoolMap[_token].isExist,
+            "Pool of this token doesn't exist"
+        );
+        _;
+    }
+
+    modifier onlyAccountExist(address _userAddress) {
+        require(
+            loanAccountMap[_userAddress].isExist,
+            "Account of this user doesn't exist in the system"
+        );
+        _;
+    }
+
+    modifier onlyPoolSufficientFund(address _token, uint256 _amount) {
+        require(
+            _amount <
+                LoanPool(loanPoolMap[_token].loanPoolAddress).availableFund(),
+            "Pool of this token doesn't have sufficient available fund for this operation"
+        );
+        _;
+    }
+
+    modifier onlyAccountSufficientFund(
+        address _userAddress,
+        address _token,
+        uint256 _amount
+    ) {
+        require(
+            //TODO: Come back at this ugly conversion again
+            int256(_amount) <
+                LoanAccount(loanAccountMap[_userAddress].loanAccountAddress)
+                    .tokenBalance(_token),
+            "Pool of this token doesn't have sufficient available fund for this operation"
+        );
+        _;
     }
 }
