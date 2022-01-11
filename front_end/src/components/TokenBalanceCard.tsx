@@ -21,12 +21,12 @@ interface TokenBalanceCardProp {
 
 export const TokenBalanceCard = ({ tokenAddress, balance }: TokenBalanceCardProp) => {
 
-    const { symbol, decimals, logoURI } = useTokenInfo(tokenAddress)
+    const { symbol, decimals, logoURL } = useTokenInfo(tokenAddress)
 
     return (
         <ListItem>
             <ListItemAvatar>
-                <Avatar alt="Token image" src={logoURI} />
+                <Avatar alt="Token image" src={logoURL} />
             </ListItemAvatar>
             <ListItemText primary={symbol} />
             <ListItemText primary={balance} />

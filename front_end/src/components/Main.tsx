@@ -66,7 +66,7 @@ export const Main = () => {
                             <List>
                                 {dummyList.map(() => {
                                     return (
-                                        <TokenBalanceCard tokenAddress="0x66b29afd67e44E42D0fD8Acd5852E8eCCBc5C5b1" balance={10} />
+                                        <TokenBalanceCard tokenAddress="0x41B5844f4680a8C38fBb695b7F9CFd1F64474a72" balance={10} />
                                     )
                                 })}
                             </List>
