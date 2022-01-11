@@ -9,6 +9,10 @@ import {
 
 import { shortenAddress } from "@usedapp/core"
 
+export type TokenBalance = {
+    address: string
+    balance: number
+}
 
 interface TokenBalanceCardProp {
     tokenAddress: string
