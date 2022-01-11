@@ -7,7 +7,7 @@ import {
     TextField
 } from "@mui/material"
 
-import { shortenAddress } from "@usedapp/core"
+import { useTokenInfo } from "../hooks/useTokenInfo"
 
 export type TokenBalance = {
     address: string
@@ -20,12 +20,15 @@ interface TokenBalanceCardProp {
 }
 
 export const TokenBalanceCard = ({ tokenAddress, balance }: TokenBalanceCardProp) => {
+
+    const { symbol, decimals, logoURI } = useTokenInfo(tokenAddress)
+
     return (
         <ListItem>
             <ListItemAvatar>
-                <Avatar alt="Token image" src="/token_image_placeholder.jpg" />
+                <Avatar alt="Token image" src={logoURI} />
             </ListItemAvatar>
-            <ListItemText primary={shortenAddress(tokenAddress)} />
+            <ListItemText primary={symbol} />
             <ListItemText primary={balance} />
             <TextField
                 id="outlined-basic"

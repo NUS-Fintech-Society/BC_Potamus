@@ -5,7 +5,7 @@ import { formatUnits } from "@ethersproject/units"
 import { TokenBalance } from "../components/TokenBalanceCard"
 
 
-export function useAccountBalance(userAddress: string, potamusLoanAddress: string): Array<TokenBalance> {
+export const useAccountBalance = (userAddress: string, potamusLoanAddress: string): Array<TokenBalance> => {
     //Load up Potamus Loan Interface
     const potamusLoanABI = PotamusLoan.abi
     const potamusLoanInterface = new utils.Interface(potamusLoanABI)
