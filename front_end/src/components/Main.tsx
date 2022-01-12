@@ -26,6 +26,7 @@ import { useEthers } from "@usedapp/core"
 import { constants } from "ethers"
 import networkMapping from "../chain-info/deployments/map.json"
 import { useAccountBalance } from "../hooks/useAccountBalance"
+import { BigNumber } from "ethers"
 
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
@@ -55,8 +56,9 @@ export const Main = () => {
                         <h2> Deposit </h2>
                         <Paper style={{ maxHeight: 200, overflow: "auto" }}>
                             <List>
-                                {tokenBalanceArray.filter(tokenBalance => tokenBalance.balance > 0).map(tokenBalance =>
-                                    <TokenBalanceCard tokenAddress={tokenBalance.address} balance={tokenBalance.balance} />)}
+                                {tokenBalanceArray.filter(tokenBalance => tokenBalance.rawBalance.gte(0)).map(tokenBalance =>
+                                    <TokenBalanceCard {...tokenBalance}
+                                    />)}
                             </List>
                         </Paper>
                     </Grid>
@@ -64,11 +66,9 @@ export const Main = () => {
                         <h2> Loan </h2>
                         <Paper style={{ maxHeight: 200, overflow: "auto" }}>
                             <List>
-                                {dummyList.map(() => {
-                                    return (
-                                        <TokenBalanceCard tokenAddress="0x41B5844f4680a8C38fBb695b7F9CFd1F64474a72" balance={10} />
-                                    )
-                                })}
+                                {tokenBalanceArray.filter(tokenBalance => tokenBalance.rawBalance.lt(0)).map(tokenBalance =>
+                                    <TokenBalanceCard {...tokenBalance}
+                                    />)}
                             </List>
                         </Paper>
                     </Grid>
