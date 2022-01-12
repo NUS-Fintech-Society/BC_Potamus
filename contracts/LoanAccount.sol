@@ -2,6 +2,7 @@
 pragma solidity ^0.8.0;
 
 import "./ABDKMathQuad.sol";
+import "./PotamusUtils.sol";
 
 contract LoanAccount {
     //If balance is so minute, i.e falls within -epsilon to epsilon
@@ -26,12 +27,15 @@ contract LoanAccount {
         return tokenAddressList.length;
     }
 
-    function getTokenAddressAndBalance(address _userAddress, uint256 _index)
+    function getTokenBalanceInfo(address _userAddress, uint256 _index)
         public
         view
         returns (
             address _tokenAddress,
             int256 _balance,
+            uint256 _secondRate,
+            uint256 _secondRateDecimals,
+            uint256 lastUpdated,
             bool _isExist
         )
     {
@@ -39,6 +43,9 @@ contract LoanAccount {
         return (
             tokenAddress,
             balanceMap[tokenAddress].balance,
+            balanceMap[tokenAddress].fsecondInterestRate,
+            PotamusUtils.FLOAT_DECIMALS,
+            balanceMap[tokenAddress].lastInterestRateUpdated,
             balanceMap[tokenAddress].isExist
         );
     }
@@ -56,7 +63,7 @@ contract LoanAccount {
         Balance storage balance = balanceMap[_token];
         uint256 currentTime = block.timestamp;
         if (balance.isExist) {
-            balance.balance = getNewBalance(
+            balance.balance = PotamusUtils.getNewBalance(
                 balance.balance,
                 balance.fsecondInterestRate, //calculate with the old interest rate
                 currentTime - balance.lastInterestRateUpdated
@@ -68,41 +75,6 @@ contract LoanAccount {
 
     function tokenBalance(address _token) public view returns (int256) {
         return balanceMap[_token].balance;
-    }
-
-    function getNewBalance(
-        int256 _oldBalance,
-        uint256 _fRatePerSecond,
-        uint256 _secondInterval
-    ) private pure returns (int256) {
-        //TODO: We have the below ugly implementation cos ABDKMathQuad doesn't have
-        //function to calculate x^n given x and n
-        //ABDKMath64x64 has support for that, but I used ABDKMathQuad in LoanPool so just
-        //wanna keep the same library. We should do gas optimization here if possible by changing
-        //library.
-        //The math trick used below: (1+rate)^(interval) = 2^(interval.log_2(1+rate))
-        return
-            ABDKMathQuad.toInt(
-                ABDKMathQuad.mul(
-                    ABDKMathQuad.fromInt(_oldBalance),
-                    ABDKMathQuad.pow_2(
-                        ABDKMathQuad.mul(
-                            //interval
-                            ABDKMathQuad.fromUInt(_secondInterval),
-                            //log_2^(1+rate)
-                            ABDKMathQuad.log_2(
-                                ABDKMathQuad.add(
-                                    ABDKMathQuad.fromUInt(1),
-                                    ABDKMathQuad.div(
-                                        ABDKMathQuad.fromUInt(_fRatePerSecond),
-                                        ABDKMathQuad.fromUInt(10**18)
-                                    )
-                                )
-                            )
-                        )
-                    )
-                )
-            );
     }
 
     function deposit(

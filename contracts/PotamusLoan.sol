@@ -3,7 +3,7 @@ pragma solidity ^0.8.0;
 
 import "./LoanAccount.sol";
 import "./LoanPool.sol";
-
+import "./PotamusUtils.sol";
 import "./IERC20.sol";
 
 contract PotamusLoan {
@@ -22,6 +22,8 @@ contract PotamusLoan {
     mapping(address => SearchableLoanAccount) public loanAccountMap;
     //Token Address => Address of LoanPool
     mapping(address => SearchableLoanPool) public loanPoolMap;
+    //List of available pool address
+    address[] poolAddressList;
 
     //Wrapper function for LoanAccount
     function getTokenListLength(address _userAddress)
@@ -37,12 +39,15 @@ contract PotamusLoan {
         }
     }
 
-    function getTokenAddressAndBalance(address _userAddress, uint256 _index)
+    function getTokenBalanceInfo(address _userAddress, uint256 _index)
         public
         view
         returns (
             address _tokenAddress,
             int256 _balance,
+            uint256 _fSecondRate,
+            uint256 _secondRateDecimals,
+            uint256 lastUpdated,
             bool _isExist
         )
     {
@@ -50,8 +55,36 @@ contract PotamusLoan {
             LoanAccount loanAccount = LoanAccount(
                 loanAccountMap[_userAddress].loanAccountAddress
             );
-            return loanAccount.getTokenAddressAndBalance(_userAddress, _index);
+            return loanAccount.getTokenBalanceInfo(_userAddress, _index);
         }
+    }
+
+    //End of wrapper function for LoanAccount
+
+    //Wrapper function for LoanAccount
+    function getNumPool() public view returns (uint256) {
+        return poolAddressList.length;
+    }
+
+    function getPoolInfo(uint256 _index)
+        public
+        view
+        returns (
+            address _tokenAddress,
+            uint256 _fAnnualInterestRate,
+            uint256 _floatDecimals,
+            uint256 _depositBalance,
+            uint256 _loanBalance
+        )
+    {
+        LoanPool loanPool = LoanPool(poolAddressList[_index]);
+        return (
+            loanPool.tokenAddress(),
+            loanPool.fAnnualInteretRate(),
+            PotamusUtils.FLOAT_DECIMALS,
+            loanPool.depositBalance(),
+            loanPool.loanBalance()
+        );
     }
 
     //End of wrapper function for LoanAccount
@@ -70,6 +103,8 @@ contract PotamusLoan {
                 true,
                 address(new LoanPool(_token))
             );
+            //Adding Pool to list of pool
+            poolAddressList.push(loanPoolMap[_token].loanPoolAddress);
         }
         if (!loanAccountMap[msg.sender].isExist) {
             loanAccountMap[msg.sender] = SearchableLoanAccount(
