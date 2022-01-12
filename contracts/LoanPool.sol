@@ -18,9 +18,10 @@ contract LoanPool {
     //Oh also, It's compounded secondly
 
     //Note that all these rate are per anual basis
-    uint256 constant fFIRST_INTEREST_RATE = 0.2 * 10**18;
-    uint256 constant fSECOND_INTEREST_RATE = 2.0 * 10**18;
-    uint256 constant fCRITICAL_UTIL_RATE = 0.8 * 10**18;
+    uint256 constant FLOAT_DECIMALS = 18;
+    uint256 constant fFIRST_ANNUAL_INTEREST_RATE = 0.2 * 10**FlOAT_DECIMALS;
+    uint256 constant fSECOND_ANNUAL_INTEREST_RATE = 2.0 * 10**FlOAT_DECIMALS;
+    uint256 constant fCRITICAL_UTIL_RATE = 0.8 * 10**FlOAT_DECIMALS;
 
     address public tokenAddress;
     uint256 public depositBalance = 0;
@@ -112,17 +113,37 @@ contract LoanPool {
         updateAccountListBalance();
     }
 
-    function updateAccountListBalance() private {
-        fSecondInterestRate = getAnnualInterestRate() / (365 * 1 days);
-        for (uint256 i = 0; i < accountMap.loanAccountAddressList.length; i++) {
-            address loanAccountAddress = accountMap.loanAccountAddressList[i];
-            if (accountMap.boolMap[loanAccountAddress]) {
-                LoanAccount(loanAccountAddress).recalculateBalance(
-                    tokenAddress,
-                    fSecondInterestRate
-                );
-            }
-        }
+    //Convert annually compounded interest into equivalent secondly compounded rate
+    function getEquivalentSecRate(uint256 _annualRate)
+        public
+        pure
+        returns (uint256)
+    {
+        return
+            ABDKMathQuad.toUInt(
+                ABDKMathQuad.mul(
+                    ABDKMathQuad.sub(
+                        ABDKMathQuad.pow_2(
+                            ABDKMathQuad.div(
+                                ABDKMathQuad.log_2(
+                                    ABDKMathQuad.add(
+                                        ABDKMathQuad.div(
+                                            ABDKMathQuad.fromUInt(_annualRate),
+                                            ABDKMathQuad.fromUInt(
+                                                1 * 10**FLOAT_DECIMALS
+                                            )
+                                        ),
+                                        ABDKMathQuad.fromUInt(1)
+                                    )
+                                ),
+                                ABDKMathQuad.fromUInt(365 * 1 days)
+                            )
+                        ),
+                        ABDKMathQuad.fromUInt(1)
+                    ),
+                    ABDKMathQuad.fromUInt(1 * 10**FLOAT_DECIMALS)
+                )
+            );
     }
 
     //TODO: Write test for this function
@@ -131,7 +152,7 @@ contract LoanPool {
         view
         returns (uint256 fInterestRate)
     {
-        uint256 fUtilRate = (10**18 * loanBalance) / depositBalance;
+        uint256 fUtilRate = (10**FLOAT_DECIMALS * loanBalance) / depositBalance;
 
         if (fUtilRate < fCRITICAL_UTIL_RATE) {
             return
@@ -141,12 +162,12 @@ contract LoanPool {
                             ABDKMathQuad.fromUInt(fUtilRate),
                             ABDKMathQuad.fromUInt(fCRITICAL_UTIL_RATE)
                         ),
-                        ABDKMathQuad.fromUInt(fFIRST_INTEREST_RATE)
+                        ABDKMathQuad.fromUInt(fFIRST_ANNUAL_INTEREST_RATE)
                     )
                 );
         } else if (fUtilRate >= fCRITICAL_UTIL_RATE) {
             return
-                fFIRST_INTEREST_RATE +
+                fFIRST_ANNUAL_INTEREST_RATE +
                 ABDKMathQuad.toUInt(
                     ABDKMathQuad.mul(
                         ABDKMathQuad.div(
@@ -154,11 +175,11 @@ contract LoanPool {
                                 fUtilRate - fCRITICAL_UTIL_RATE
                             ),
                             ABDKMathQuad.fromUInt(
-                                1 * 10**18 - fCRITICAL_UTIL_RATE
+                                1 * 10**FLOAT_DECIMALS - fCRITICAL_UTIL_RATE
                             )
                         ),
                         ABDKMathQuad.fromUInt(
-                            fSECOND_INTEREST_RATE - fFIRST_INTEREST_RATE
+                            fSECOND_ANNUAL_INTEREST_RATE - fFIRST_ANNUAL_INTEREST_RATE
                         )
                     )
                 );
