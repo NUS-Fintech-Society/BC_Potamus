@@ -4,7 +4,7 @@ import {
 import { useState } from "react"
 import { AmountButton, Functionality } from "./AmountButton"
 import { constants } from "ethers"
-
+import { isAddress } from "@ethersproject/address"
 
 export interface AddressAmountButtonProps {
     functionality: Functionality
@@ -12,11 +12,12 @@ export interface AddressAmountButtonProps {
 
 export const AddressAmountButton = ({ functionality }: AddressAmountButtonProps) => {
     const [tokenAddress, setTokenAddress] = useState<string>(constants.AddressZero)
-    console.log("Hi")
 
     const handleInputChangeAddress = (event: React.ChangeEvent<HTMLInputElement>) => {
         const newAddress = event.target.value === "" ? constants.AddressZero : event.target.value
-        setTokenAddress(newAddress)
+        if (isAddress(newAddress)) {
+            setTokenAddress(newAddress)
+        }
     }
 
     return (
