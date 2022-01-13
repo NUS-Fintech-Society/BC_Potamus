@@ -3,13 +3,13 @@ import { ListItemText } from "@mui/material"
 import { useState, useEffect } from "react"
 
 
-interface RealTimeBalanceProp {
+interface RealTimeBalanceProps {
     initialBalance: number,
     incrPerSec: number
 }
 
 
-export const RealTimeBalance = ({ initialBalance, incrPerSec }: RealTimeBalanceProp) => {
+export const RealTimeBalance = ({ initialBalance, incrPerSec }: RealTimeBalanceProps) => {
     const [realTimeBalance, setRealTimeBalance] = useState(initialBalance)
     const [incr, setIncr] = useState(incrPerSec)
 

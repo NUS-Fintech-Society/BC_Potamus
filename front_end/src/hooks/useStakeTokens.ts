@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react"
 import { useEthers, useContractFunction } from "@usedapp/core"
 import { constants, utils } from "ethers"
+import { Functionality } from "../components/AmountButton"
 import PotamusLoan from "../chain-info/contracts/PotamusLoan.json"
 import ERC20 from "../chain-info/contracts/IERC20.json"
 import { Contract } from "@ethersproject/contracts"
 import networkMapping from "../chain-info/deployments/map.json"
 
-export const useStakeTokens = (tokenAddress: string) => {
+export const useStakeTokens = (tokenAddress: string, functionality: Functionality.Deposit | Functionality.Payback) => {
     // address
     // abi
     // chainId
@@ -25,10 +26,9 @@ export const useStakeTokens = (tokenAddress: string) => {
         useContractFunction(erc20Contract, "approve", {
             transactionName: "Approve ERC20 transfer",
         })
-    // stake hooks
-    // TokenFarm.stakeTokens()
+    // send hooks
     const { send: stakeSend, state: stakeState } =
-        useContractFunction(potamusLoanContract, "deposit", {
+        useContractFunction(potamusLoanContract, functionality.toString(), {
             transactionName: "Stake Tokens",
         })
 

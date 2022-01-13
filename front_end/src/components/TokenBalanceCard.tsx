@@ -3,14 +3,13 @@ import {
     ListItemText,
     ListItemAvatar,
     Avatar,
-    Button,
-    TextField
 } from "@mui/material"
 
 import { useTokenInfo } from "../hooks"
 import { BigNumber } from "ethers"
 import { formatUnits } from "@ethersproject/units"
 import { RealTimeBalance } from "./RealTimeBalance"
+import { AmountButton, Functionality } from "./AmountButton"
 
 export type TokenBalance = {
     tokenAddress: string
@@ -20,19 +19,20 @@ export type TokenBalance = {
     lastUpdated: BigNumber
 }
 
-interface TokenBalanceCardProp {
+interface TokenBalanceCardProps {
     tokenAddress: string
     rawBalance: BigNumber
     rawRatePerSec: BigNumber
     rawRatePerSecDecimals: BigNumber
     lastUpdated: BigNumber
+    functionality: Functionality.Withdraw | Functionality.Payback
 }
 
 let calculateCurrentBalance = (initialBalance: number, ratePerSec: number, secSince: number): number => {
     return initialBalance * Math.pow((ratePerSec + 1), secSince)
 }
 
-export const TokenBalanceCard = ({ tokenAddress, rawBalance, rawRatePerSec, rawRatePerSecDecimals, lastUpdated }: TokenBalanceCardProp) => {
+export const TokenBalanceCard = ({ tokenAddress, rawBalance, rawRatePerSec, rawRatePerSecDecimals, lastUpdated, functionality }: TokenBalanceCardProps) => {
     const { symbol, decimals, logoURL } = useTokenInfo(tokenAddress)
 
     const currentSeconds = Math.round(new Date().getTime() / 1000);
@@ -53,15 +53,7 @@ export const TokenBalanceCard = ({ tokenAddress, rawBalance, rawRatePerSec, rawR
             </ListItemAvatar>
             <ListItemText primary={symbol} />
             <RealTimeBalance initialBalance={initialBalance} incrPerSec={incrPerSec} />
-            <TextField
-                id="outlined-basic"
-                label="Amount"
-                variant="standard"
-                style={{ width: 80 }}
-            />
-            <Button color="primary" size="large">
-                Deposit
-            </Button>
+            <AmountButton tokenAddress={tokenAddress} functionality={functionality}></AmountButton>
         </ListItem>
     )
 }

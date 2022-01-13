@@ -2,8 +2,6 @@ import {
     Paper,
     List,
     Box,
-    Button,
-    TextField,
     Grid,
     TableRow,
     TableCell,
@@ -20,7 +18,8 @@ import { useAccountBalance, usePoolInfo } from "../hooks"
 
 import { TokenBalanceCard } from "./TokenBalanceCard"
 import { PoolCard } from "./PoolCard"
-import { StakeForm } from "./StakeForm"
+import { AmountButton, Functionality } from "./AmountButton"
+import { AddressAmountButton } from "./AddressAmountButton"
 
 export const Main = () => {
     const { account, chainId } = useEthers()
@@ -41,7 +40,7 @@ export const Main = () => {
                         <Paper style={{ maxHeight: 200, overflow: "auto" }}>
                             <List>
                                 {tokenBalanceArray.filter(tokenBalance => tokenBalance.rawBalance.gte(0)).map(tokenBalance =>
-                                    <TokenBalanceCard {...tokenBalance}
+                                    <TokenBalanceCard {...{ ...tokenBalance, functionality: Functionality.Withdraw }}
                                     />)}
                             </List>
                         </Paper>
@@ -51,7 +50,7 @@ export const Main = () => {
                         <Paper style={{ maxHeight: 200, overflow: "auto" }}>
                             <List>
                                 {tokenBalanceArray.filter(tokenBalance => tokenBalance.rawBalance.lt(0)).map(tokenBalance =>
-                                    <TokenBalanceCard {...tokenBalance}
+                                    <TokenBalanceCard {...{ ...tokenBalance, functionality: Functionality.Payback }}
                                     />)}
                             </List>
                         </Paper>
@@ -61,24 +60,14 @@ export const Main = () => {
 
             <Box>
                 <h1> Potamus Pool </h1>
-                <StakeForm tokenAddress={"0xC011a73ee8576Fb46F5E1c5751cA3B9Fe0af2a6F"}></StakeForm>
-                {/* <Grid container>
+                <Grid container>
                     <Grid item xs={3}>
                         <p> Create New Pool </p>
                     </Grid>
                     <Grid item xs={9}>
-                        <TextField
-                            id="outlined-basic"
-                            label="Token Address"
-                            variant="standard"
-                        />
-                        <TextField id="outlined-basic" label="Amount" variant="standard" />
-                        <Button color="primary" size="large">
-                            Deposit
-                        </Button>
+                        <AddressAmountButton functionality={Functionality.Deposit}></AddressAmountButton>
                     </Grid>
-                </Grid> */}
-
+                </Grid>
                 <Paper style={{ maxHeight: 300, overflow: "auto" }}>
                     <TableContainer component={Paper}>
                         <Table stickyHeader >

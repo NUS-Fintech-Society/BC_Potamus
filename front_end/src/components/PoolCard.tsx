@@ -1,7 +1,5 @@
 import {
     Avatar,
-    Button,
-    TextField,
     TableRow,
     TableCell,
     IconButton,
@@ -16,6 +14,7 @@ import { BigNumber } from "ethers"
 import React, { useState } from "react"
 import { useTokenInfo } from "../hooks"
 import { formatUnits } from "@ethersproject/units"
+import { AmountButton, Functionality } from "./AmountButton";
 
 export type PoolInfo = {
     tokenAddress: string
@@ -25,7 +24,7 @@ export type PoolInfo = {
     rawLoanBalance: BigNumber
 }
 
-interface PoolCardProp {
+interface PoolCardProps {
     tokenAddress: string
     rawAnnualRate: BigNumber
     rawRateDecimals: BigNumber
@@ -33,7 +32,7 @@ interface PoolCardProp {
     rawLoanBalance: BigNumber
 }
 
-export const PoolCard = ({ tokenAddress, rawAnnualRate, rawRateDecimals, rawDepositBalance, rawLoanBalance }: PoolCardProp) => {
+export const PoolCard = ({ tokenAddress, rawAnnualRate, rawRateDecimals, rawDepositBalance, rawLoanBalance }: PoolCardProps) => {
 
     const { symbol, decimals, logoURL } = useTokenInfo(tokenAddress)
     const annualRatePercent = parseFloat(formatUnits(rawAnnualRate, rawRateDecimals)) * 100
@@ -76,22 +75,8 @@ export const PoolCard = ({ tokenAddress, rawAnnualRate, rawRateDecimals, rawDepo
             <TableRow>
                 <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
                     <Collapse in={open} timeout="auto" unmountOnExit>
-                        <TextField
-                            id="outlined-basic"
-                            label="Amount"
-                            variant="standard"
-                        />
-                        <Button color="primary" size="large">
-                            Deposit
-                        </Button>
-                        <TextField
-                            id="outlined-basic"
-                            label="Amount"
-                            variant="standard"
-                        />
-                        <Button color="primary" size="large">
-                            Withdraw
-                        </Button>
+                        <AmountButton tokenAddress={tokenAddress} functionality={Functionality.Deposit}></AmountButton>
+                        <AmountButton tokenAddress={tokenAddress} functionality={Functionality.Withdraw}></AmountButton>
                     </Collapse>
                 </TableCell>
             </TableRow >
