@@ -1,51 +1,35 @@
 import {
     Paper,
     List,
-    ListItem,
-    ListItemText,
-    ListItemAvatar,
-    Avatar,
     Box,
-    Input,
     Button,
     TextField,
     Grid,
-    Typography,
     TableRow,
     TableCell,
-    IconButton,
     TableContainer,
     TableHead,
     Table,
-    Collapse,
     TableBody,
-    CardHeader
 } from "@mui/material"
 
 import { useEthers } from "@usedapp/core"
 import { constants } from "ethers"
 import networkMapping from "../chain-info/deployments/map.json"
-import { useAccountBalance } from "../hooks/useAccountBalance"
-import { BigNumber } from "ethers"
-
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import { useAccountBalance, usePoolInfo } from "../hooks"
 
 import { TokenBalanceCard } from "./TokenBalanceCard"
-
-import { useState, useEffect } from "react"
-import * as React from 'react';
+import { PoolCard } from "./PoolCard"
 
 
 export const Main = () => {
-    let dummyList = [1, 2, 3, 4, 4, 5, 5, 5, 5]
-
     const { account, chainId } = useEthers()
     const potamusLoanAddress = chainId ? networkMapping[String(chainId)]["PotamusLoan"][0] : constants.AddressZero
 
     //TODO: Fix this trick, you should get the user account from Main's props
     //After conditional rendering, if user logged in, then load up the main page or something
     const tokenBalanceArray = useAccountBalance(account ? account : constants.AddressZero, potamusLoanAddress)
+    const poolArray = usePoolInfo(potamusLoanAddress)
 
     return (
         <div>
@@ -100,14 +84,15 @@ export const Main = () => {
                                 <TableRow>
                                     <TableCell />
                                     <TableCell align="right">Token</TableCell>
-                                    <TableCell align="right">Interest Rate&nbsp;(% per anum)</TableCell>
+                                    <TableCell align="right">Interest Rate&nbsp;(per annum)</TableCell>
                                     <TableCell align="right">Deposit Balance</TableCell>
                                     <TableCell align="right">Loan Balance</TableCell>
+                                    <TableCell align="right">Util Rate</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {dummyList.map(() => (
-                                    <Row />
+                                {poolArray.map(poolInfo => (
+                                    <PoolCard {...poolInfo} />
                                 ))}
                             </TableBody>
                         </Table>
@@ -115,63 +100,5 @@ export const Main = () => {
                 </Paper>
             </Box>
         </div >
-    )
-}
-
-
-export const Row = () => {
-    const [open, setOpen] = useState(false);
-
-    return (
-        <React.Fragment>
-            <TableRow>
-                <TableCell>
-                    <IconButton
-                        aria-label="expand row"
-                        size="small"
-                        onClick={() => setOpen(!open)}
-                    >
-                        {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-                    </IconButton>
-                </TableCell>
-                <TableCell component="th" scope="row">
-                    <CardHeader
-                        avatar={
-                            <Avatar
-                                alt="Token Image"
-                                src="/token_image_placeholder.jpg"
-                            />
-                        }
-                        title='DAI'
-                    />
-                </TableCell>
-                <TableCell align="right">13</TableCell>
-                <TableCell align="right">13</TableCell>
-                <TableCell align="right">13</TableCell>
-            </TableRow>
-
-            <TableRow>
-                <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
-                    <Collapse in={open} timeout="auto" unmountOnExit>
-                        <TextField
-                            id="outlined-basic"
-                            label="Amount"
-                            variant="standard"
-                        />
-                        <Button color="primary" size="large">
-                            Deposit
-                        </Button>
-                        <TextField
-                            id="outlined-basic"
-                            label="Amount"
-                            variant="standard"
-                        />
-                        <Button color="primary" size="large">
-                            Withdraw
-                        </Button>
-                    </Collapse>
-                </TableCell>
-            </TableRow >
-        </React.Fragment >
     )
 }

@@ -7,7 +7,7 @@ import {
     TextField
 } from "@mui/material"
 
-import { useTokenInfo } from "../hooks/useTokenInfo"
+import { useTokenInfo } from "../hooks"
 import { BigNumber } from "ethers"
 import { formatUnits } from "@ethersproject/units"
 import { useState, useEffect, useMemo } from "react"
