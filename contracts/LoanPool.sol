@@ -71,30 +71,36 @@ contract LoanPool {
     }
 
     //TODO: remember to trigger recalculation for both deposit and loan function
-    function deposit(uint256 _amount) public {
-        depositBalance += _amount;
+    function deposit(
+        int256 _depositBalanceAdjustment,
+        int256 _loanBalanceAdjustment
+    ) public {
+        depositBalance = uint256(
+            int256(depositBalance) + _depositBalanceAdjustment
+        );
+        loanBalance = uint256(int256(loanBalance) + _loanBalanceAdjustment);
         updateAccountListBalance();
     }
 
-    // //Returns if this money transfer is successful
-    // modifier onlyMoneyOut(address _userAddress, uint256 _amount) {
-    //     //Make sure that the pool has sufficient ERC20
-    //     require(
-    //         IERC20(tokenAddress).balanceOf(address(this)) >= _amount,
-    //         "Pool has insufficient fund"
-    //     );
-    //     require(availableFund() >= _amount, "Pool has insufficient fund");
-    //     //Make the transfer
-    //     require(
-    //         IERC20(tokenAddress).transfer(_userAddress, _amount),
-    //         "Transfer of token failed"
-    //     );
-    //     _;
-    // }
+    //Returns if this money transfer is successful
+    modifier onlyMoneyOut(address _userAddress, uint256 _amount) {
+        //Make sure that the pool has sufficient ERC20
+        require(
+            IERC20(tokenAddress).balanceOf(address(this)) >= _amount,
+            "Pool has insufficient fund"
+        );
+        require(availableFund() >= _amount, "Pool has insufficient fund");
+        //Make the transfer
+        require(
+            IERC20(tokenAddress).transfer(_userAddress, _amount),
+            "Transfer of token failed"
+        );
+        _;
+    }
 
     function withdraw(address _userAddress, uint256 _amount)
         public
-    // onlyMoneyOut(_userAddress, _amount)
+        onlyMoneyOut(_userAddress, _amount)
     {
         //If transfer is succesful, update the pool balance
         depositBalance -= _amount;
@@ -102,12 +108,17 @@ contract LoanPool {
     }
 
     //Have check to make sure the amount loan out doesn't cause more loan amount than deposit
-    function loan(address _userAddress, uint256 _amount)
-        public
-    // onlyMoneyOut(_userAddress, _amount)
-    {
+    function loan(
+        address _userAddress,
+        uint256 _amount,
+        int256 _depositBalanceAdjustment,
+        int256 _loanBalanceAdjustment
+    ) public onlyMoneyOut(_userAddress, _amount) {
         //If transfer is succesful, update the pool balance
-        loanBalance += _amount;
+        depositBalance = uint256(
+            int256(depositBalance) + _depositBalanceAdjustment
+        );
+        loanBalance = uint256(int256(loanBalance) + _loanBalanceAdjustment);
         updateAccountListBalance();
     }
 

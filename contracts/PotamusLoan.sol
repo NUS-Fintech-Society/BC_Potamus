@@ -124,7 +124,16 @@ contract PotamusLoan {
         );
 
         //Update Loan Pool
-        loanPool.deposit(_amount);
+        //Need to check if users have any outstanding loans or not
+        //Trigger recalculation first
+        loanAccount.recalculateBalance(_token, loanPool.fSecondInterestRate());
+        int256 tokenBalance = loanAccount.tokenBalance(_token);
+        (int256 DBAdjust, int256 LBAdjust) = PotamusUtils.depositDBLB(
+            tokenBalance,
+            int256(_amount)
+        );
+        loanPool.deposit(DBAdjust, LBAdjust);
+
         loanPool.addLoanAccount(address(loanAccount));
 
         //Update Loan Account
@@ -172,7 +181,13 @@ contract PotamusLoan {
         //TODO: Some other requirements
 
         //Do the actual fund transfer to Pool
-        loanPool.loan(msg.sender, _amount);
+        loanAccount.recalculateBalance(_token, loanPool.fSecondInterestRate());
+        int256 tokenBalance = loanAccount.tokenBalance(_token);
+        (int256 DBAdjust, int256 LBAdjust) = PotamusUtils.loanDBLB(
+            tokenBalance,
+            int256(_amount)
+        );
+        loanPool.loan(msg.sender, _amount, DBAdjust, LBAdjust);
 
         loanAccount.loan(
             _token,
