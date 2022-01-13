@@ -20,7 +20,7 @@ import { useAccountBalance, usePoolInfo } from "../hooks"
 
 import { TokenBalanceCard } from "./TokenBalanceCard"
 import { PoolCard } from "./PoolCard"
-
+import { StakeForm } from "./StakeForm"
 
 export const Main = () => {
     const { account, chainId } = useEthers()
@@ -61,7 +61,8 @@ export const Main = () => {
 
             <Box>
                 <h1> Potamus Pool </h1>
-                <Grid container>
+                <StakeForm tokenAddress={"0xC011a73ee8576Fb46F5E1c5751cA3B9Fe0af2a6F"}></StakeForm>
+                {/* <Grid container>
                     <Grid item xs={3}>
                         <p> Create New Pool </p>
                     </Grid>
@@ -76,7 +77,8 @@ export const Main = () => {
                             Deposit
                         </Button>
                     </Grid>
-                </Grid>
+                </Grid> */}
+
                 <Paper style={{ maxHeight: 300, overflow: "auto" }}>
                     <TableContainer component={Paper}>
                         <Table stickyHeader >
