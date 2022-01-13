@@ -18,7 +18,7 @@ import { useAccountBalance, usePoolInfo } from "../hooks"
 
 import { TokenBalanceCard } from "./TokenBalanceCard"
 import { PoolCard } from "./PoolCard"
-import { AmountButton, Functionality } from "./AmountButton"
+import { Functionality } from "./AmountButton"
 import { AddressAmountButton } from "./AddressAmountButton"
 
 export const Main = () => {

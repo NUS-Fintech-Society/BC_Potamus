@@ -76,7 +76,7 @@ export const PoolCard = ({ tokenAddress, rawAnnualRate, rawRateDecimals, rawDepo
                 <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
                     <Collapse in={open} timeout="auto" unmountOnExit>
                         <AmountButton tokenAddress={tokenAddress} functionality={Functionality.Deposit}></AmountButton>
-                        <AmountButton tokenAddress={tokenAddress} functionality={Functionality.Withdraw}></AmountButton>
+                        <AmountButton tokenAddress={tokenAddress} functionality={Functionality.Loan}></AmountButton>
                     </Collapse>
                 </TableCell>
             </TableRow >

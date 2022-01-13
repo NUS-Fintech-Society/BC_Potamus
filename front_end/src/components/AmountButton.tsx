@@ -1,8 +1,8 @@
 import {
     TextField,
-    Button
 } from "@mui/material"
 import { StakeTokensButton } from "./StakeTokensButton"
+import { UnstakeTokensButton } from "./UnstakeTokensButton"
 import React, { useState } from "react"
 
 export enum Functionality {
@@ -36,7 +36,7 @@ export const AmountButton = ({ tokenAddress, functionality }: AmountButtonProps)
             />
             {(functionality === Functionality.Deposit || functionality === Functionality.Payback) ?
                 < StakeTokensButton tokenAddress={tokenAddress} amount={amount} functionality={functionality}></StakeTokensButton>
-                : <Button>Lol</Button>}
+                : <UnstakeTokensButton tokenAddress={tokenAddress} amount={amount} functionality={functionality}></UnstakeTokensButton>}
         </React.Fragment>
     )
 }
