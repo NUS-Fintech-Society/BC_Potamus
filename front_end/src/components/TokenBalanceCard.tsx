@@ -39,7 +39,7 @@ export const TokenBalanceCard = ({ tokenAddress, rawBalance, rawRatePerSec, rawR
 
     const secSince = currentSeconds - Math.round(lastUpdated.toNumber())
     //orginalBalance: balance on the block
-    const originalBalance = parseFloat(formatUnits(rawBalance, decimals))
+    const originalBalance = Math.abs(parseFloat(formatUnits(rawBalance, decimals)))
     const ratePerSec = parseFloat(formatUnits(rawRatePerSec, rawRatePerSecDecimals))
     //initialBalance: balance from that last updated block
     const initialBalance = calculateCurrentBalance(originalBalance, ratePerSec, secSince)

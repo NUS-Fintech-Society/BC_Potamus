@@ -1,29 +1,23 @@
-from scripts.helpful_scripts import get_account
-from brownie import PotamusLoan, PotamusUtils, interface
+from scripts.helpful_scripts import get_account, deposit_token
+from brownie import PotamusLoan, PotamusUtils
 from web3 import Web3
 import yaml
 import json
 import os
 import shutil
+import time
 
 
 def deploy_token_farm_and_dapp_token(front_end_update=False):
     account = get_account()
     potamus_utils = PotamusUtils.deploy({"from": account})
-
     potamus_loan = PotamusLoan.deploy({"from": account})
+    time.sleep(5)
 
-    dai = interface.IERC20('0x04DF6e4121c27713ED22341E7c7Df330F56f289B')
-    
-    tx = dai.approve(potamus_loan.address, 10 * 10 ** 18, {"from": account})
-    tx.wait(1)
-
-    tx = potamus_loan.deposit(
-        '0x04DF6e4121c27713ED22341E7c7Df330F56f289B', #DAI Token address on Kovan testnet
-        3 * 10 ** 18,
-        {"from": account},
-    )
-    tx.wait(1)
+    deposit_token("bat_token", potamus_loan, account, 15)
+    deposit_token("comp_token", potamus_loan, account, 0.8)
+    deposit_token("dai_token", potamus_loan, account, 14)
+    deposit_token("usdc_token", potamus_loan, account, 100)
 
     if front_end_update:
         update_front_end()
