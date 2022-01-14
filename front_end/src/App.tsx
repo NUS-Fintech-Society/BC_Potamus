@@ -1,4 +1,4 @@
-import { ChainId, DAppProvider, Kovan } from "@usedapp/core"
+import { DAppProvider, Kovan } from "@usedapp/core"
 import { Header } from "./components/Header"
 import { Container } from "@mui/material"
 import { Main } from "./components/Main"
@@ -13,7 +13,7 @@ function App() {
       }
     }}>
       <Header />
-      <Container maxWidth="md">
+      <Container maxWidth="lg">
         <Main />
       </Container>
     </DAppProvider>

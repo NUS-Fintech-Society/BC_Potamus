@@ -33,10 +33,10 @@ export const Main = () => {
     return (
         <div>
             <Box>
-                <h1> Your Balance </h1>
+                <h1> Your Wallet </h1>
                 <Grid container>
                     <Grid item xs={12} sm={6}>
-                        <h2> Deposit </h2>
+                        <h2> Deposit Balance</h2>
                         <Paper style={{ maxHeight: 200, overflow: "auto" }}>
                             <List>
                                 {tokenBalanceArray.filter(tokenBalance => tokenBalance.rawBalance.gte(0)).map(tokenBalance =>
@@ -46,7 +46,7 @@ export const Main = () => {
                         </Paper>
                     </Grid>
                     <Grid item xs={12} sm={6}>
-                        <h2> Loan </h2>
+                        <h2> Loan Balance</h2>
                         <Paper style={{ maxHeight: 200, overflow: "auto" }}>
                             <List>
                                 {tokenBalanceArray.filter(tokenBalance => tokenBalance.rawBalance.lt(0)).map(tokenBalance =>
@@ -57,28 +57,23 @@ export const Main = () => {
                     </Grid>
                 </Grid>
             </Box>
-
             <Box>
-                <h1> Potamus Pool </h1>
-                <Grid container>
-                    <Grid item xs={3}>
-                        <p> Create New Pool </p>
-                    </Grid>
-                    <Grid item xs={9}>
-                        <AddressAmountButton functionality={Functionality.Deposit}></AddressAmountButton>
-                    </Grid>
-                </Grid>
-                <Paper style={{ maxHeight: 300, overflow: "auto" }}>
-                    <TableContainer component={Paper}>
+                <h1> Create New Pool </h1>
+                <AddressAmountButton functionality={Functionality.Deposit}></AddressAmountButton>
+            </Box>
+            <Box>
+                <h1> Potamus Pools </h1>
+                <Paper sx={{ width: '80%', overflow: 'hidden', margin: 'auto' }}>
+                    <TableContainer sx={{ maxHeight: 340 }}>
                         <Table stickyHeader >
                             <TableHead>
                                 <TableRow>
                                     <TableCell />
-                                    <TableCell align="right">Token</TableCell>
-                                    <TableCell align="right">Interest Rate&nbsp;(per annum)</TableCell>
-                                    <TableCell align="right">Deposit Balance</TableCell>
-                                    <TableCell align="right">Loan Balance</TableCell>
-                                    <TableCell align="right">Util Rate</TableCell>
+                                    <TableCell align="right"><h3>Token</h3></TableCell>
+                                    <TableCell align="right"><h3>Interest Rate&nbsp;(per annum)</h3></TableCell>
+                                    <TableCell align="right"><h3>Deposit Balance</h3></TableCell>
+                                    <TableCell align="right"><h3>Loan Balance</h3></TableCell>
+                                    <TableCell align="right"><h3>Util Rate</h3></TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
