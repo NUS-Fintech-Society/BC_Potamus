@@ -23,7 +23,7 @@ export const RealTimeBalance = ({ initialBalance, incrPerSec }: RealTimeBalanceP
             setRealTimeBalance(realTimeBalance => realTimeBalance + incr);
         }, 1000);
         return () => clearInterval(interval);
-    }, []);
+    }, [incr]);
 
     return (<ListItemText primary={realTimeBalance} />)
 }

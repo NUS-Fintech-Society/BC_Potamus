@@ -1,6 +1,6 @@
 import { useContractCall, useContractCalls, ContractCall } from "@usedapp/core"
 import PotamusLoan from "../chain-info/contracts/PotamusLoan.json"
-import { utils, BigNumber, constants } from "ethers"
+import { utils, BigNumber } from "ethers"
 import { TokenBalance } from "../components/TokenBalanceCard"
 
 
