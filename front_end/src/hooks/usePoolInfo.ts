@@ -1,7 +1,7 @@
 import { useContractCall, useContractCalls, ContractCall } from "@usedapp/core"
 import PotamusLoan from "../chain-info/contracts/PotamusLoan.json"
 import { utils, BigNumber } from "ethers"
-import { PoolInfo } from "../components/PoolCard"
+import { PoolInfo } from "../constants/types"
 
 
 export const usePoolInfo = (potamusLoanAddress: string): Array<PoolInfo> => {

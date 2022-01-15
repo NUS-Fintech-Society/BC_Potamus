@@ -2,7 +2,8 @@ import {
     TextField,
 } from "@mui/material"
 import { useState } from "react"
-import { AmountButton, Functionality } from "./AmountButton"
+import { Functionality } from "../../../constants/enums"
+import { AmountButton } from "./AmountButton"
 import { constants } from "ethers"
 import { isAddress } from "@ethersproject/address"
 

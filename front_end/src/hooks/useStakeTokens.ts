@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { useEthers, useContractFunction } from "@usedapp/core"
 import { constants, utils } from "ethers"
-import { Functionality } from "../components/AmountButton"
+import { Functionality } from "../constants/enums"
 import PotamusLoan from "../chain-info/contracts/PotamusLoan.json"
 import ERC20 from "../chain-info/contracts/IERC20.json"
 import { Contract } from "@ethersproject/contracts"
