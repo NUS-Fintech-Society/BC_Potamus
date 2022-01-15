@@ -40,7 +40,7 @@ export const Main = () => {
                         <Paper style={{ maxHeight: 200, overflow: "auto" }}>
                             <List>
                                 {tokenBalanceArray.filter(tokenBalance => tokenBalance.rawBalance.gte(0)).map(tokenBalance =>
-                                    <TokenBalanceCard {...{ ...tokenBalance, functionality: Functionality.Withdraw }}
+                                    <TokenBalanceCard key={tokenBalance.tokenAddress} {...{ ...tokenBalance, functionality: Functionality.Withdraw }}
                                     />)}
                             </List>
                         </Paper>
@@ -50,7 +50,7 @@ export const Main = () => {
                         <Paper style={{ maxHeight: 200, overflow: "auto" }}>
                             <List>
                                 {tokenBalanceArray.filter(tokenBalance => tokenBalance.rawBalance.lt(0)).map(tokenBalance =>
-                                    <TokenBalanceCard {...{ ...tokenBalance, functionality: Functionality.Payback }}
+                                    <TokenBalanceCard key={tokenBalance.tokenAddress} {...{ ...tokenBalance, functionality: Functionality.Payback }}
                                     />)}
                             </List>
                         </Paper>
@@ -78,7 +78,7 @@ export const Main = () => {
                             </TableHead>
                             <TableBody>
                                 {poolArray.map(poolInfo => (
-                                    <PoolCard {...poolInfo} />
+                                    <PoolCard key={poolInfo.tokenAddress} {...poolInfo} />
                                 ))}
                             </TableBody>
                         </Table>
