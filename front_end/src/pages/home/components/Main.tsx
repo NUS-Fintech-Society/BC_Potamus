@@ -48,6 +48,7 @@ export const Main = () => {
                   .filter((tokenBalance) => tokenBalance.rawBalance.gte(0))
                   .map((tokenBalance) => (
                     <TokenBalanceCard
+                      key={tokenBalance.tokenAddress}
                       {...{
                         ...tokenBalance,
                         functionality: Functionality.Withdraw,
@@ -65,6 +66,7 @@ export const Main = () => {
                   .filter((tokenBalance) => tokenBalance.rawBalance.lt(0))
                   .map((tokenBalance) => (
                     <TokenBalanceCard
+                      key={tokenBalance.tokenAddress}
                       {...{
                         ...tokenBalance,
                         functionality: Functionality.Payback,
@@ -109,7 +111,7 @@ export const Main = () => {
               </TableHead>
               <TableBody>
                 {poolArray.map((poolInfo) => (
-                  <PoolCard {...poolInfo} />
+                  <PoolCard key={poolInfo.tokenAddress} {...poolInfo} />
                 ))}
               </TableBody>
             </Table>
