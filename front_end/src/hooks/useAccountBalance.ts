@@ -1,8 +1,7 @@
 import { useContractCall, useContractCalls, ContractCall } from "@usedapp/core"
 import PotamusLoan from "../chain-info/contracts/PotamusLoan.json"
-import { utils, BigNumber, constants } from "ethers"
-import { TokenBalance } from "../components/TokenBalanceCard"
-
+import { utils, BigNumber } from "ethers"
+import { TokenBalance } from "../constants/types";
 
 export const useAccountBalance = (userAddress: string, potamusLoanAddress: string): Array<TokenBalance> => {
     //Load up Potamus Loan Interface

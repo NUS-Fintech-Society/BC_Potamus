@@ -16,12 +16,10 @@ export const Header = () => {
 
     const { account, activateBrowserWallet, deactivate } = useEthers();
 
-    const isConnected = account !== undefined;
-
     return (
         <div className={classes.container}>
-            {isConnected ? (
-                <Button variant="contained" onClick={deactivate}>
+            {account ? (
+                <Button variant="contained" onClick={() => deactivate()}>
                     Disconnect
                 </Button>
             ) : (

@@ -3,7 +3,7 @@ import PotamusLoan from "../chain-info/contracts/PotamusLoan.json"
 import { utils, constants } from "ethers"
 import { Contract } from "@ethersproject/contracts"
 import networkMapping from "../chain-info/deployments/map.json"
-import { Functionality } from "../components/AmountButton"
+import { Functionality } from "../constants/enums"
 
 /**
  * Expose { send, state } object to facilitate unstaking the user's tokens from the LoanPool contract

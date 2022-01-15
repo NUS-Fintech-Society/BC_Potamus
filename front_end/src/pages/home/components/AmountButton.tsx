@@ -4,13 +4,7 @@ import {
 import { StakeTokensButton } from "./StakeTokensButton"
 import { UnstakeTokensButton } from "./UnstakeTokensButton"
 import React, { useState } from "react"
-
-export enum Functionality {
-    Deposit = "deposit",
-    Withdraw = "withdraw",
-    Loan = "loan",
-    Payback = "payback"
-}
+import { Functionality } from "../../../constants/enums"
 
 export interface AmountButtonProps {
     tokenAddress: string,

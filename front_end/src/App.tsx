@@ -1,7 +1,10 @@
 import { DAppProvider, Kovan } from "@usedapp/core"
-import { Header } from "./components/Header"
-import { Container } from "@mui/material"
-import { Main } from "./components/Main"
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+} from "react-router-dom";
+import Home from './pages/home';
 
 function App() {
   return (
@@ -12,10 +15,11 @@ function App() {
         checkInterval: 1000
       }
     }}>
-      <Header />
-      <Container maxWidth="lg">
-        <Main />
-      </Container>
+      <Router>
+        <Routes>
+          <Route path="/" element={<Home />} />
+        </Routes>
+      </Router>
     </DAppProvider>
   )
 }
