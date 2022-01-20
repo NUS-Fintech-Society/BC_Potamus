@@ -46,7 +46,7 @@ export const useStakeTokens = (tokenAddress: string, functionality: Functionalit
         if (approveAndStakeErc20State.status === "Success") {
             stakeSend(tokenAddress, amountToStake)
         }
-    }, [approveAndStakeErc20State, amountToStake, tokenAddress, stakeSend])
+    }, [approveAndStakeErc20State, amountToStake, tokenAddress])
 
     //useState to trigger useEffect
     //state for the hook user to call
