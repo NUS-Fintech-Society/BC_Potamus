@@ -14,9 +14,13 @@ https://user-images.githubusercontent.com/41280374/149461861-a7330373-b9d4-45ca-
 
 ## Functionality
 - Deposit, Withdraw, Loan, Payback
+
 ## Todo
 - [ ] Add automatic liquidation functionality using Chainlink Price Feeds
 - [ ] Add smart contract tests
 - [ ] Improve front-end UI
 - [ ] Deploy website to decentralised hosting servers
 - [ ] Improve smart contracts architecture design (look into overwriting `balanceOf`)
+
+## Credits
+Backend + Frontend code structure follows [Solidity, Blockchain, and Smart Contract Course – Beginner to Expert Python Tutorial](https://www.youtube.com/watch?v=M576WGiDBdQ&t=2642s)
