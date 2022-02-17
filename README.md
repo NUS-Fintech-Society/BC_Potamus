@@ -2,6 +2,9 @@
 Loan &amp; Instalment Winter Project Batch 21/22
 
 # Friday Jan 14 2021 - Potamus Loan v0.1
+## Try it yourself
+Reach Potamus at https://potamus.herokuapp.com/
+ 
 ## React Front-end + Solidity Smart Contracts deployed to Kovan testnet.
 ### Screenshot
 ![PotamusLoan_v0 1_screenshot](https://user-images.githubusercontent.com/41280374/149461057-7e74ee8c-4739-4e3a-9a96-066cf3a17454.png)
@@ -16,4 +19,4 @@ https://user-images.githubusercontent.com/41280374/149461861-a7330373-b9d4-45ca-
 - [ ] Add smart contract tests
 - [ ] Improve front-end UI
 - [ ] Deploy website to decentralised hosting servers
-- [ ] Improve smart contracts architecture design
+- [ ] Improve smart contracts architecture design (look into overwriting `balanceOf`)
